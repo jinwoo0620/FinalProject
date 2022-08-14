@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="noticeMapper"><!-- 이것만 만든다 해서 모든 mapper를 알아 들을 수 있는 건 아니니까 -->
+	
+	
+	<!-- 리스트 카운트(시작) -->
+	<select id="getListCount" resultType="_int">
+  		select count(*)
+  		from board
+  		where status ='Y' AND board_type = 0
+  	</select>
+  	
+  	<select id="getListCount2" resultType="_int">
+  		select count(*)
+  		from board
+  		where status ='Y' AND board_type = 6 
+  	</select>
+  	
+  	<select id="getListCount3" resultType="_int">
+  		select count(*)
+  		from board
+  		where status ='Y' AND board_type = 7 
+  	</select>
+  	
+  	<select id="getListCount4" resultType="_int">
+  		select count(*)
+  		from board
+  		where status ='Y' AND board_type = 8 
+  	</select>
+  	
+  	<!-- 리스트  카운트(끝) -->
+  	
+  	
+  	
+  	
+  	
+  	<!-- 리스트 가져오기(시작) -->
+  	<select id="getNoticeList" resultMap ="noticeResultSet">
+  		select *
+  		from board
+   		where status = 'Y' AND board_type = 0
+  		order by board_no desc
+  	</select>
+  	
+  	<select id="getNoticeList2" resultMap ="noticeResultSet2">
+  		select *
+  		from board
+   		where status = 'Y' AND board_type = 6
+  		order by board_no desc
+  	</select>
+  	
+  	<select id="getNoticeList3" resultMap ="noticeResultSet3">
+  		select *
+  		from board
+   		where status = 'Y' AND board_type = 7
+  		order by board_no desc
+  	</select>
+  	
+  	<select id="getNoticeList4" resultMap ="noticeResultSet4">
+  		select *
+  		from board
+   		where status = 'Y' AND board_type = 8
+  		order by board_no desc
+  	</select>
+  	<!-- 리스트 가져오기(끝) -->
+  	
+  	
+  	
+  	
+  	
+  	<resultMap type="Notice" id="noticeResultSet">
+  		<id column ="BOARD_NO" property="noticeNo"/>
+  		<result column="BOARD_TITLE" property="noticeTitle"/>
+  		<result column="BOARD_CONTENT" property="noticeContent"/>
+  		<result column="BCREATE_DATE" property="NCreateDate"/>
+ 		<result column="MODIFY_DATE" property="modifyDate"/>
+  		<result column="WRITER" property="writer"/>
+  		<result column="BOARD_TYPE" property="noticeType"/>
+  		<result column="STATUS" property="status"/>
+  		<result column="VIEWS" property="views"/>
+  		
+   	</resultMap>
+   	
+   	<resultMap type="Notice2" id="noticeResultSet2">
+  		<id column ="BOARD_NO" property="noticeNo2"/>
+  		<result column="BOARD_TITLE" property="noticeTitle2"/>
+  		<result column="BOARD_CONTENT" property="noticeContent2"/>
+  		<result column="BCREATE_DATE" property="NCreateDate2"/>
+ 		<result column="MODIFY_DATE" property="modifyDate2"/>
+  		<result column="WRITER" property="writer2"/>
+  		<result column="BOARD_TYPE" property="noticeType2"/>
+  		<result column="STATUS" property="status2"/>
+  		<result column="VIEWS" property="views2"/>
+  		
+   	</resultMap>
+   	
+   	<resultMap type="Notice3" id="noticeResultSet3">
+  		<id column ="BOARD_NO" property="noticeNo3"/>
+  		<result column="BOARD_TITLE" property="noticeTitle3"/>
+  		<result column="BOARD_CONTENT" property="noticeContent3"/>
+  		<result column="BCREATE_DATE" property="NCreateDate3"/>
+ 		<result column="MODIFY_DATE" property="modifyDate3"/>
+  		<result column="WRITER" property="writer3"/>
+  		<result column="BOARD_TYPE" property="noticeType3"/>
+  		<result column="STATUS" property="status3"/>
+  		<result column="VIEWS" property="views3"/>
+  		
+   	</resultMap>
+   	
+   	<resultMap type="Notice4" id="noticeResultSet4">
+  		<id column ="BOARD_NO" property="noticeNo4"/>
+  		<result column="BOARD_TITLE" property="noticeTitle4"/>
+  		<result column="BOARD_CONTENT" property="noticeContent4"/>
+  		<result column="BCREATE_DATE" property="NCreateDate4"/>
+ 		<result column="MODIFY_DATE" property="modifyDate4"/>
+  		<result column="WRITER" property="writer4"/>
+  		<result column="BOARD_TYPE" property="noticeType4"/>
+  		<result column="STATUS" property="status4"/>
+  		<result column="VIEWS" property="views4"/>
+  		
+   	</resultMap>
+   	
+   	
+   	
+   	
+   	
+   	
+	<!-- 게시글 입력(시작) -->
+	<insert id="insertNotice">
+		insert into board
+		values(seq_bid.nextval, #{noticeTitle}, #{noticeContent}, sysdate, 
+				sysdate, #{writer}, #{noticeType}, default, #{views})
+	</insert>
+	
+	<insert id="insertNotice2">
+		insert into board
+		values(seq_bid.nextval, #{noticeTitle2}, #{noticeContent2}, sysdate, 
+				sysdate, #{writer2}, 6, default, #{views2})
+	</insert>
+	
+	<insert id="insertNotice3">
+		insert into board
+		values(seq_bid.nextval, #{noticeTitle3}, #{noticeContent3}, sysdate, 
+				sysdate, #{writer3}, 7, default, #{views3})
+	</insert>
+	
+	<insert id="insertNotice4">
+		insert into board
+		values(seq_bid.nextval, #{noticeTitle4}, #{noticeContent4}, sysdate, 
+				sysdate, #{writer4}, 8, default, #{views4})
+	</insert>
+	<!-- 게시글 입력(끝) -->
+	
+	
+	
+	
+	<!-- 조회수(시작) -->
+	<update id="addReadCount">
+		update board
+		set views = views + 1
+		where board_no = #{bId}
+	</update>
+	
+	<update id="addReadCount2">
+		update board
+		set views = views + 1
+		where board_no = #{bId} AND board_type = 6
+	</update>
+	
+	<update id="addReadCount3">
+		update board
+		set views = views + 1
+		where board_no = #{bId} AND board_type = 7
+	</update>
+	
+	<update id="addReadCount4">
+		update board
+		set views = views + 1
+		where board_no = #{bId} AND board_type = 8
+	</update>
+	<!-- 조회수(끝) -->
+	
+	
+	
+	
+	
+	<!-- 게시글 상세보기(시작) -->
+	<select id="selectNotice" resultMap="noticeResultSet">
+		select *
+		from board
+		where board_no = #{bId} and status = 'Y'
+	</select>
+	
+	<select id="selectNotice2" resultMap="noticeResultSet2">
+		select *
+		from board
+		where board_no = #{bId} and status = 'Y' AND board_type = 6
+	</select>
+	
+	<select id="selectNotice3" resultMap="noticeResultSet3">
+		select *
+		from board
+		where board_no = #{bId} and status = 'Y' AND board_type = 7
+	</select>
+	
+	<select id="selectNotice4" resultMap="noticeResultSet4">
+		select *
+		from board
+		where board_no = #{bId} and status = 'Y' AND board_type = 8
+	</select>
+	<!-- 게시글 상세보기(끝) -->
+	
+	
+	<!-- 게시글 업데이트(시작) -->
+	<update id="updateNotice">
+		update board
+		set board_title=#{noticeTitle}, board_content=#{noticeContent}, 
+			modify_date=sysdate
+		where board_no=#{noticeNo}
+	</update>
+	
+	<update id="updateNotice2">
+		update board
+		set board_title=#{noticeTitle2}, board_content=#{noticeContent2}, 
+			modify_date=sysdate
+		where board_no=#{noticeNo2} AND board_type = 6
+	</update>
+	
+	<update id="updateNotice3">
+		update board
+		set board_title=#{noticeTitle3}, board_content=#{noticeContent3}, 
+			modify_date=sysdate
+		where board_no=#{noticeNo3} AND board_type = 7
+	</update>
+	
+	<update id="updateNotice4">
+		update board
+		set board_title=#{noticeTitle4}, board_content=#{noticeContent4}, 
+			modify_date=sysdate
+		where board_no=#{noticeNo4} AND board_type = 8
+	</update>
+	<!-- 게시글 업데이트(끝) -->
+	
+	
+	
+	<!-- 게시글 삭제(시작) -->
+	<delete	id="deleteNotice">
+		delete from board
+		where board_no = #{bId}
+	</delete>
+		
+	
+	<delete	id="deleteNotice2">
+		delete from board
+		where board_no = #{bId} AND board_type = 6
+	</delete>
+	
+	<delete	id="deleteNotice3">
+		delete from board
+		where board_no = #{bId} AND board_type = 7
+	</delete>
+	
+	<delete	id="deleteNotice4">
+		delete from board
+		where board_no = #{bId} AND board_type = 7
+	</delete>
+	<!-- 게시글 삭제(끝) -->
+	
+	
+	
+	<!-- 댓글 작성(시작) -->
+	<insert id="insertReply">
+		insert into reply
+		values(seq_reid.nextval, #{replyContent}, sysdate, default, #{boardNo}, default, #{memberId})
+	</insert>
+	
+	<insert id="insertReply2">
+		insert into reply
+		values(seq_reid.nextval, #{replyContent2}, sysdate, default, #{boardNo2}, default, #{memberId2})
+	</insert>
+	
+	<insert id="insertReply3">
+		insert into reply
+		values(seq_reid.nextval, #{replyContent3}, sysdate, default, #{boardNo3}, default, #{memberId3})
+	</insert>
+	
+	<insert id="insertReply4">
+		insert into reply
+		values(seq_reid.nextval, #{replyContent4}, sysdate, default, #{boardNo4}, default, #{memberId4})
+	</insert>
+	<!-- 댓글 작성(끝) -->
+	
+	
+	<!-- 댓글 리스트(시작) -->
+	<select id="selectReplyList" resultMap = "replyResultSet">
+		select *
+		from reply
+		where board_no = #{nId} and status='Y'
+		order by reply_no desc
+	</select>
+	
+	<select id="selectReplyList2" resultMap = "replyResultSet2">
+		select *
+		from reply
+		where board_no = #{nId} and status='Y' 
+		order by reply_no desc
+	</select>
+	
+	<select id="selectReplyList3" resultMap = "replyResultSet3">
+		select *
+		from reply
+		where board_no = #{nId} and status='Y' 
+		order by reply_no desc
+	</select>
+	
+	<select id="selectReplyList4" resultMap = "replyResultSet4">
+		select *
+		from reply
+		where board_no = #{nId} and status='Y' 
+		order by reply_no desc
+	</select>
+	<!-- 댓글 리스트(끝) -->
+	
+	
+	
+	
+	<resultMap id="replyResultSet" type ="Reply">
+		<id property="replyNo" column="REPLY_NO"/>
+		<result property="replyContent" column="REPLY_CONTENT"/>
+		<result property="createDate" column="CREATE_DATE"/>
+		<result property="status" column="STATUS"/>
+		<result property="boardNo" column="BOARD_NO"/>
+		<result property="scope" column="SCOPE"/>
+		<result property="memberId" column="MEMBER_ID"/>
+		
+	</resultMap> 
+	
+	<resultMap id="replyResultSet2" type ="Reply2">
+		<id property="replyNo2" column="REPLY_NO"/>
+		<result property="replyContent2" column="REPLY_CONTENT"/>
+		<result property="createDate2" column="CREATE_DATE"/>
+		<result property="status2" column="STATUS"/>
+		<result property="boardNo2" column="BOARD_NO"/>
+		<result property="scope2" column="SCOPE"/>
+		<result property="memberId2" column="MEMBER_ID"/>
+		
+	</resultMap> 
+	
+	<resultMap id="replyResultSet3" type ="Reply3">
+		<id property="replyNo3" column="REPLY_NO"/>
+		<result property="replyContent3" column="REPLY_CONTENT"/>
+		<result property="createDate3" column="CREATE_DATE"/>
+		<result property="status3" column="STATUS"/>
+		<result property="boardNo3" column="BOARD_NO"/>
+		<result property="scope3" column="SCOPE"/>
+		<result property="memberId3" column="MEMBER_ID"/>
+		
+	</resultMap> 
+	
+	<resultMap id="replyResultSet4" type ="Reply4">
+		<id property="replyNo4" column="REPLY_NO"/>
+		<result property="replyContent4" column="REPLY_CONTENT"/>
+		<result property="createDate4" column="CREATE_DATE"/>
+		<result property="status4" column="STATUS"/>
+		<result property="boardNo4" column="BOARD_NO"/>
+		<result property="scope4" column="SCOPE"/>
+		<result property="memberId4" column="MEMBER_ID"/>
+		
+	</resultMap> 
+	
+	
+	
+	
+	
+	
+</mapper>

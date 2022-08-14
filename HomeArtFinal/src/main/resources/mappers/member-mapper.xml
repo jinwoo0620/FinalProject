@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="memberMapper">
+	
+	<!-- 회원가입 -->
+	<insert id="signUpUser">
+		insert into member
+		values(#{id}, #{pwd}, #{name}, #{nickName}, #{email}, #{gender}, #{phone}, #{address}, sysdate, #{power}, default,#{originalFileName},#{renameFileName},#{field},#{career},#{workingDay},#{workingTime} )
+	</insert>
+	
+	<!-- 로그인  -->
+	<select id="login" resultMap="memberRM">
+		select * 
+		from member
+		where ID = #{id} and MSTATUS='Y'
+	</select>
+	
+	<resultMap type="Member" id="memberRM">
+		<id column="ID" property="id"/>
+		<result column="PWD" property="pwd"/>
+		<result column="NAME" property="name"/>
+		<result column="NICKNAME" property="nickName"/>
+		<result column="EMAIL" property="email"/>
+		<result column="GENDER" property="gender"/>
+		<result column="PHONE" property="phone"/>
+		<result column="ADDRESS" property="address"/>
+		<result column="ENROLL_DATE" property="enrollDate"/>
+		<result column="POWER" property="power"/>
+		<result column="MSTATUS" property="mStatus"/>
+		<result column="ORIGINAL_FILENAME" property="originalFileName"/>
+		<result column="RENAME_FILENAME" property="renameFileName"/>
+		<result column="FIELD" property="field"/>
+		<result column="CAREER" property="career"/>
+		<result column="WORKING_DAY" property="workingDay"/>
+		<result column="WORKING_TIME" property="workingTime"/>
+	</resultMap>
+	
+	<!-- 아이디 찾기 -->
+	<select id="findId" resultMap="memberRM">
+		select *
+		from MEMBER
+		where NAME = #{name} and EMAIL = #{email} and MSTATUS='Y'
+	</select>
+	
+	<!-- 비번찾기_인증메일 -->
+	<select id="searchPwEmail" resultMap="memberRM">
+		select *
+		from MEMBER
+		where ID = #{id} and NAME = #{name} and EMAIL = #{email} and MSTATUS='Y'
+	</select>
+	
+	<!-- 비번찾기_재설정 -->
+	<update id="changePw">
+		update MEMBER
+		set PWD = #{pwd}
+		where ID = #{id} and MSTATUS='Y'
+	</update>
+	
+	<!-- 아이디 중복검사 -->
+	<select id="idScan" resultMap="memberRM">
+		select *
+		from MEMBER
+		where ID = #{id} and MSTATUS='Y'
+	</select>
+	
+	
+	
+	
+	
+	<update id="deleteMember"> 
+       update member
+       set MSTATUS = 'N'
+       where ID = #{id} and MSTATUS='Y'     
+    </update>
+    
+    <select id="selectEncodePwd" resultMap="memberResultSet">
+       select *
+      from member
+      where ID = #{id} and MSTATUS='Y'
+    </select>
+    
+    <resultMap type="Member" id="memberResultSet">
+       <id column="ID" property="id"/>
+       <result column="PWD" property="pwd"/>
+       <result column="NAME" property="name"/>
+       <result column="NICKNAME" property="nickName"/>
+       <result column="EMAIL" property="email"/>
+       <result column="GENDER" property="gender"/>
+       <result column="PHONE" property="phone"/>
+       <result column="ADDRESS" property="address"/>
+       <result column="ENROLL_DATE" property="enrollDate"/>
+       <result column="POWER" property="power"/>
+       <result column="MSTATUS" property="mStatus"/>
+       <result column="ORIGINAL_FILENAME" property="originalFileName"/>
+       <result column="RENAME_FILENAME" property="renameFileName"/>
+    </resultMap>
+    
+    <select id="selectNickName" resultType="_int">
+       select count(*)
+      from member
+      where NICKNAME = #{nickName} and MSTATUS='Y'
+    </select>
+
+    
+   <update id="modifyExpert">
+      UPDATE MEMBER 
+        SET PWD = #{pwd}, NICKNAME = #{nickName}, EMAIL = #{email}, PHONE  = #{phone}, 
+           ADDRESS = #{address}, ORIGINAL_FILENAME = #{originalFileName}, RENAME_FILENAME = #{renameFileName},  FIELD = #{field}, 
+           CAREER = #{career}, WORKING_DAY = #{workingDay}, WORKING_TIME = #{workingTime}
+        WHERE MSTATUS = 'Y' AND ID = #{id} AND POWER = '1'
+   </update>
+   
+   <update id="modifyMember">
+      UPDATE MEMBER 
+        SET PWD = #{pwd}, NICKNAME = #{nickName}, EMAIL = #{email}, PHONE  = #{phone}, 
+           ADDRESS = #{address}, ORIGINAL_FILENAME = #{originalFileName}, RENAME_FILENAME = #{renameFileName}
+        WHERE MSTATUS = 'Y' AND ID = #{id} AND POWER = '0'
+   </update>
+   
+<!--    의뢰 요청 추가 -->
+    <insert id="insertRequest">
+       INSERT INTO REQUEST
+        VALUES(SEQ_RID.NEXTVAL, #{expertProfileNo}, #{memberId}, 'W', SYSTIMESTAMP)     
+    </insert>
+    
+    <resultMap type="Expert" id="expertResultSet">
+       <id column="EXPERT_PROFILE_NO" property="expertProfileNo"/>
+       <result column="EXPERT_TITLE" property="expertTitle"/>
+       <result column="EXPERT_INFO" property="expertInfo"/>
+       <result column="AREA" property="area"/>
+       <result column="EMPLOYEE_COUNT" property="employeeCount"/>
+       <result column="HIRE_COUNT" property="hireCount"/>
+       <result column="CAREER" property="career"/>
+       <result column="WORKING_DAY" property="workingDay"/>
+       <result column="WORKING_TIME" property="workingTime"/>
+       <result column="DETAIL_DESCRIPTION" property="detailDescription"/>
+       <result column="BUSINESS_LICENSE" property="businessLicense"/>
+       <result column="FIELD" property="field"/>
+       <result column="ORIGINAL_FILENAME" property="originalFileName"/>
+       <result column="RENAME_FILENAME" property="renameFileName"/>
+       <result column="EXPERT_BOARD_STATUS" property="expertBoardStatus"/>
+       <result column="EXPERT_ID" property="expertId"/>
+    </resultMap>
+    
+<!--     전문가ID로 작성한 프로필 조회 -->
+    <select id="selectExpertProfile" resultMap="expertResultSet">
+       SELECT *
+       FROM EXPERT_B
+       WHERE EXPERT_ID = #{id}
+    </select>
+ 
+    <resultMap type="Request" id="requestResultSet">
+       <id column="REQUEST_ID" property="requestId"/>
+       <result column="EXPERT_PROFILE_NO" property="expertProfileNo"/>
+       <result column="MEMBER_ID" property="memberId"/>
+       <result column="REQUEST_STATUS" property="requestStatus"/>
+       
+    </resultMap>
+    
+<!--     전문가 프로필 넘버에 해당하는 요청 가져오기 -->    
+    <select id="selectRequestList" resultMap="requestResultSet">
+       select *
+       from request
+       where EXPERT_PROFILE_NO = #{expertProfileNo}      
+    </select>
+
+<!--  요청의 상태가 W(대기)중일 경우 요청을 보낸 회원의 정보를 불러오기 -->
+   <select id="selectMember" resultMap="memberResultSet">
+       select *
+      from member
+      where ID = #{id} and MSTATUS='Y'
+    </select>
+    
+<!--     로그인한 회원 계정으로 의뢰한 요청 조회해서 가져오기 -->
+    <select id="memberRequest" resultMap="requestResultSet">
+       select *
+       from request
+       where MEMBER_ID = #{id} 
+    </select>
+    
+<!--     해당 전문가 프로필에 동일한 회원ID로 이미 의뢰요청을 했는지 검사 -->
+   <select id="dupReqCheck" resultType="_int">
+      select count(*)
+      from request
+      where EXPERT_PROFILE_NO = #{expertProfileNo} and 
+           MEMBER_ID = #{memberId} and REQUEST_STATUS = 'W'
+   </select>
+   
+<!--    해당 전문가 프로필에 동일한 회원ID로  이미 매칭된 상태인지 검사 -->
+   <select id="dupReqCheck2" resultType="_int">
+      select count(*)
+      from request
+      where EXPERT_PROFILE_NO = #{expertProfileNo} and 
+           MEMBER_ID = #{memberId} and REQUEST_STATUS = 'Y'
+   </select>
+   
+<!--    승인할 회원의 ID를 가진 레코드의 요청상태 'Y'으로 바꿔주기 -->
+   <update id="allowRequest">
+      update request
+      set REQUEST_STATUS = 'Y' 
+      where MEMBER_ID = #{memberId} and EXPERT_PROFILE_NO = #{expertProfileNo} and REQUEST_STATUS = 'W'
+   </update>
+   
+<!--    거절할 회원의 ID를 가진 REQUEST테이블의 해당 레코드 요청상태를 'N'으로 바꿔주기 -->
+   <update id="rejectRequest">
+      update request
+      set REQUEST_STATUS = 'N' 
+      where MEMBER_ID = #{requesterId} and REQUEST_STATUS = 'W'
+   </update>
+   
+<!--    매칭 취소할 회원의 ID에 해당하는 REQUEST테이블의 해당 레코드의 요청상태를 'Y'에서  'N'으로 바꿔주기 -->
+   <update id="matchCancelE">
+      update request
+      set REQUEST_STATUS = 'N' 
+      where MEMBER_ID = #{requesterId} and REQUEST_STATUS = 'Y'
+   </update>
+   
+<!--    전문가 프로필 넘버로 전문가 프로필 조회해서 받아오기 -->
+   <select id="selectExpertProfile2" resultMap="expertResultSet">
+      select *
+      from EXPERT_B
+      where EXPERT_PROFILE_NO = #{expertProfileNo}
+   </select>
+
+<!-- 전문가 회원 정보를  경력을 기준으로 내림차순 상위 3개의 값을 가져옴   -->
+   <select id="topExpertMemberList" resultMap="memberResultSet">
+      <![CDATA[ 
+      SELECT *
+      FROM 
+         ( SELECT *
+         FROM MEMBER
+         WHERE POWER = '1' AND NOT CAREER IS NULL AND MSTATUS = 'Y'
+         ORDER BY to_number(CAREER) DESC )
+      WHERE ROWNUM <= 3
+      ]]>
+   </select>
+   
+   <select id="allExpertMember" resultMap="memberResultSet">
+      select *
+      from member
+      where power='1'
+   </select>
+   
+   <select id="randomExpertList" resultMap="memberResultSet">
+      select *
+
+      from member
+      
+      where power='1'
+   </select>
+   
+<!--    매칭 취소할 전문가 프로필 넘버에 해당하는 REQUEST테이블의 해당 레코드의 요청상태를 'Y'에서 'N'으로 바꿔주기  -->
+   <update id="matchCancelM">
+      update request
+      set REQUEST_STATUS = 'N' 
+      where EXPERT_PROFILE_NO = #{expertProfileNo} and REQUEST_STATUS = 'Y'
+   </update>
+   
+<!--    보낸 의뢰요청을 취소할 전문가 프로필 넘버에 해당하는 REQUEST테이블의 해당 레코드 요청상태를 'W'에서 'N'으로 바꿔주기  -->
+   <update id="requestCancelM">
+      update request
+      set REQUEST_STATUS = 'N' 
+      where EXPERT_PROFILE_NO = #{expertProfileNo} and REQUEST_STATUS = 'W'
+   </update>
+   
+<!-- 모든 전문가 회원의 객체를 경력을 기준으로 내림차순하여 가져온다.  -->
+   <select id="allExpertCareere" resultMap="memberResultSet">
+      SELECT *
+      FROM 
+         ( SELECT *
+         FROM MEMBER
+         WHERE POWER = '1' AND NOT CAREER IS NULL AND MSTATUS = 'Y'
+         ORDER BY to_number(CAREER) DESC )
+   </select>
+	
+	
+	
+	
+</mapper>

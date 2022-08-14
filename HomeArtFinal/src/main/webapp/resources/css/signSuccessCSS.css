@@ -1,0 +1,46 @@
+@charset "UTF-8";
+@import url(reset.css);
+
+body{
+	background: #EBF2FE;
+}
+.bodyWrap{
+	max-width: 1130px; margin: 0 auto;
+}
+.container{ 
+	margin: 100px auto ; text-align: center; padding: 50px 40px;
+	background: #fff; border-radius: 10px; max-width: 700px; height: 520px; 
+	
+}
+.signSuccessImg{
+	width:100%; height: 200px;  margin: 0 auto; position: relative;
+}
+.ssBg{width:100%; height: 100%; position: absolute;}
+.ssBg>img{position: absolute; bottom: 0; }
+.ssBg>img:first-of-type{left: 0; width: 160px;}
+.ssBg>img:last-of-type{right: 0; width: 170px;}
+.signSuccessImg>.userPt{margin: 0 auto;width: 200px; height: 200px; overflow: hidden;}
+.signSuccessImg>.userPt>img{ width: 100%; height: 100%; border-radius: 5px; object-fit: cover;}
+.signSuccessText{
+	margin: 20px auto;
+}
+.signSuccessText>h3{
+	font-size: 30px; margin-bottom: 20px;
+}
+.signSuccessText>strong{
+	font-size: 16px; color: #666;
+}
+.signSuccessText>.successBt{
+	display: flex; justify-content: space-around;margin-top: 30px;
+}
+.successBt>button{
+	width: 160px; height: 40px; background: #fff; border: 1px solid #4F8CD1;
+	color: #4F8CD1; transition: all 0.5s;
+}
+.successBt>button:first-of-type {
+	background: #4F8CD1; color: #fff;
+}
+.successBt>button:hover{
+	background: #EBF2FE; color: #4F8CD1; border: none; cursor: pointer;
+}
+

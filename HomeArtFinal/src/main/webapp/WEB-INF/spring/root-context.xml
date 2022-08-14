@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+   
+   <!-- Root Context: defines shared resources visible to all other web components -->
+   <!-- DataSource 등록 : 어떤 DB에 연결할것이냐 -->
+   <bean class="org.apache.commons.dbcp.BasicDataSource" id="dataSource" destroy-method="close"><!-- bean이라는 태그는 객체 생성 -->
+   <!-- class에 빨간줄이 떠있으면 파일이 없어서 그런걸 수 있으니 mvnrepository에 commons-dbcp 검색 -->
+   <!-- destroy-method="close" : 닫아주는 메소드로서 close를 사용 하겠다 -->
+      <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+      <property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+      <property name="username" value="HOMEART"/>
+      <property name="password" value="HOMEART"/>
+      <!-- property는 setter를 이용해서 객체에 값을 넣는다-->
+      <!-- 객체 생성 후, 값을 집어넣는 방법 : 1. 매개변수 생성자 통해서  2. setter를 이용해서 객체에 값을 넣는다.  -->
+   </bean><!-- 2번째 줄에 bean이 있기 때문에 bean만 써도 됨  -->   
+   
+   <!-- SqlSession 빈 등록 -->
+   <bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean"><!-- 빨간 줄이 안뜨는 이유는 myBatis와 myBatis-spring을 넣어놨기 때문 -->
+      <property name="dataSource" ref="dataSource"/>   <!-- ref="dataSource"는 id="dataSource"를 나타낸다 / ref:참고 -->
+      <!-- sqlSession이 있으려면 myBatis가 있어야함, myBatis는 myBatisconfig를 통해서 설정 정보를 봄 -->
+      <!-- sqlSession을 만들려면 sqlSessionFactory가 있어야 하고, sqlSessionFactory를 만들려면 sqlSessionBuilder가 필요해 -->
+      <!-- sqlSessionFactoryBuilder라는 클래스는 build라는 메소드를 통해서 sqlSessionFactory를 만듬-->
+      <!-- sqlSessionconfig를 읽어와야 sqlSession도 만들어짐 -->
+      <property name="configLocation" value="classpath:mybatis-config.xml"/>   <!-- classpath는 src/main/resources를 나타내는 것 -->
+   </bean>
+   <!-- document type 써줬던 거 기억남??  -->
+   
+   <!-- sqlSession을 밖에서 사용할 수 있도록 -->
+   <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+      <constructor-arg ref="sqlSession"/>
+      <!-- constructor-arg 태그 : 매개변수 생성자, ref는 참조, ref="sqlSession"은 bean id="sqlSession"을 나타낸다 -->
+   </bean>
+   
+   <!-- 트랜잭션 -->
+   <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+   <!-- 빨간 줄이 떴다면 jar : mvnrepository에서 spring-jdbc 검색 : 버전은 스프링과 똑같아 -->
+      <property name="dataSource" ref="dataSource"/>
+   </bean>
+   
+   <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+      <property name="maxUploadSize" value="100000000"/><!-- 100000000: 10메가 -->
+      <property name="maxInMemorySize" value="100000000"/>
+   </bean>
+   
+   
+   <!-- 이메일 인증 설정 -->
+   <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> 
+       <property name="host" value="smtp.naver.com"/> <!-- 서버 호스트 -->
+       <property name="port" value="465"/> <!-- 서버 포트 -->
+       <property name="username" value="jwrla0620@naver.com"/> <!-- 회사 이메일 설정 -->
+       <property name="password" value="wlsdnrla23!"/> <!-- 회사 이메일의 비밀번호 -->
+       <!-- 보안연결 SSL과 관련된 설정 -->
+       <property name="javaMailProperties">
+           <props>
+           <prop key="mail.smtp.auth">true</prop>
+           <prop key="mail.smtp.starttls.enable">true</prop>
+           <prop key="mail.smtps.checkserveridentity">true</prop>
+           <prop key="mail.smtps.ssl.trust">*</prop>
+           <prop key="mail.debug">true</prop>
+           <prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+           </props>
+       </property>
+    </bean>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+</beans>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="searchMapper">
+  <select id="getPurchaseList" resultMap="purchaseInfo">
+  	 SELECT * 
+	 FROM BUY_GOODS
+    	JOIN GOODS_ATT USING(GOODS_ID)
+     WHERE STATUS = 'Y' AND THUMB_NAIL = 0
+	 AND GOODS_TITLE LIKE '%' || #{title} || '%' 
+  </select>
+  
+  <select id="getBoardList" resultMap="boardInfo">
+  	SELECT BOARD_NO, BOARD_TITLE, WRITER, VIEWS, ORIGIN_NAME, CHANGE_NAME, MEMBER.RENAME_FILENAME 
+  	FROM BOARD
+  		JOIN ATT USING(BOARD_NO)
+  		JOIN MEMBER ON(WRITER = ID)
+  	WHERE STATUS = 'Y' AND BOARD_TYPE = 1
+	AND FILE_LEVEL = 0
+	AND BOARD_TITLE LIKE '%' || #{title} || '%' 
+  </select>
+  
+  <select id="getExpertList" resultMap="expert">
+  	SELECT EXPERT_PROFILE_NO, EXPERT_TITLE, EXPERT_INFO, AREA,
+    EB.FIELD, EB.WORKING_DAY, M.RENAME_FILENAME MRENAME, EB.RENAME_FILENAME EBRENAME
+    , EB.CAREER
+  	FROM EXPERT_B EB
+  		JOIN MEMBER M ON(EXPERT_ID = ID)
+  	WHERE EXPERT_BOARD_STATUS = 'Y'
+  	AND EXPERT_TITLE LIKE '%' || #{title} || '%'
+  </select>
+  
+  <resultMap type="ebi" id="expert">
+  	<id column="EXPERT_PROFILE_NO" property="expertProfileNo"></id>
+  	<result column="EXPERT_TITLE" property="expertTitle"></result>
+  	<result column="EXPERT_INFO" property="expertInfo"></result>
+  	<result column="AREA" property="area"></result>
+  	<result column="FIELD" property="field"></result>
+  	<result column="MRENAME" property="mReName"></result>
+  	<result column="EBRENAME" property="ebReName"></result>
+  	<result column="WORKING_DAY" property="workingDay"></result>
+  	<result column="CAREER" property="career"></result>
+  </resultMap>
+  
+  <resultMap type="boardInfo" id="boardInfo">
+  	<id column="BOARD_NO" property="boardNo"></id>
+  	<result column="BOARD_TITLE" property="boardTitle"></result>
+  	<result column="WRITER" property="writer"></result>
+  	<result column="VIEWS" property="views"></result>
+  	<result column="ORIGIN_NAME" property="originName"></result>
+  	<result column="CHANGE_NAME" property="changeName"></result>
+  	<result column="RENAME_FILENAME" property="profilePath"></result>
+  </resultMap>
+  
+  <resultMap type="PurchaseInfo" id="purchaseInfo">
+  	<id column="GOODS_ID" property="goodsId"></id>
+  	<result column="GOODS_TITLE" property="goodsTitle"></result>
+  	<result column="GOODS_PRICE" property="goodsPrice"></result>
+  	<result column="GOODS_COMPANY" property="goodsCompay"></result>
+  	<result column="STATUS" property="status"></result>
+  	<result column="ORIGIN_FILENAME" property="originFileName"></result>
+  	<result column="RENAME_FILENAME" property="reNameFileName"></result>
+  	<result column="IMAGE_STATUS" property="imageStatus"></result>
+  </resultMap>
+</mapper>

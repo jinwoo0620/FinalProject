@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cartMapper">
+
+	<resultMap type="Cart" id="cartResultSet">
+		<id column="CART_ID" property="cartId"/>
+		<result column="GOODS_COUNT" property="goodsCount"/>
+		<result column="GOODS_ID" property="goodsId"/>
+		<result column="MEMBER_ID" property="memberId"/>
+		<result column="GOODS_TITLE" property="goodsTitle"/>
+		<result column="GOODS_PRICE" property="goodsPrice"/>
+		<result column="RENAME_FILENAME" property="renameFileName"/>
+	</resultMap>
+	
+	
+	
+	<insert id="insertCart">
+		insert into cart (cart_id, goods_count, goods_id, member_id)
+		values (seq_caid.nextval, #{goodsCount}, #{goodsId}, #{memberId})
+	</insert>
+
+	
+	<select id="selectTextList" resultMap="cartResultSet" >
+		select c.cart_id, c.goods_count, c.goods_id, c.member_id, b.goods_title, b.goods_price
+		from cart c
+		     join buy_goods b on (c.goods_id = b.goods_id)
+		where c.member_id = #{memberId}
+	</select>
+	
+	<select id="selectImgList" resultMap="cartResultSet" >
+	select c.cart_id, c.goods_id, bg.goods_title, ga.rename_filename
+		from cart c 
+        left outer join buy_goods bg
+        on c.goods_id = bg.goods_id
+        left outer join goods_att ga
+        on bg.goods_id = ga.goods_id
+        where c.member_id = #{memberId} and ga.thumb_nail = 0
+	</select>
+	
+	<delete id="deleteCart">
+		delete from cart
+		where cart_id = #{cartId}
+	</delete>
+	
+	<select id="checkCart" resultType="_int">
+	select count(*)
+	from cart
+	where goods_id=#{goodsId}
+
+	</select>
+	
+</mapper>
+	
