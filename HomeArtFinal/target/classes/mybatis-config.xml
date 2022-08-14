@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+	<settings>
+      <setting name="jdbcTypeForNull" value="NULL"/>
+   </settings>
+   <typeAliases>
+		<typeAlias type="com.kh.homeArt.member.model.vo.Member" alias = "Member"/>
+		<typeAlias type="com.kh.homeArt.board.model.vo.Board" alias="Board"/>
+		
+		<typeAlias type="com.kh.homeArt.notice.model.vo.Notice" alias = "Notice"/>
+		<typeAlias type="com.kh.homeArt.notice.model.vo.Notice2" alias = "Notice2"/>
+		<typeAlias type="com.kh.homeArt.notice.model.vo.Notice3" alias = "Notice3"/>
+		<typeAlias type="com.kh.homeArt.notice.model.vo.Notice4" alias = "Notice4"/>
+		
+		
+		<typeAlias type="com.kh.homeArt.board.model.vo.Reply" alias="Reply"/> 
+		<typeAlias type="com.kh.homeArt.notice.model.vo.Reply2" alias="Reply2"/> 
+		<typeAlias type="com.kh.homeArt.notice.model.vo.Reply3" alias="Reply3"/> 
+		<typeAlias type="com.kh.homeArt.notice.model.vo.Reply4" alias="Reply4"/> 
+	
+	
+		<typeAlias type="com.kh.homeArt.expert.model.vo.Expert" alias="Expert"/>
+		
+	   	<typeAlias type="com.kh.homeArt.member.model.vo.Member" alias="Member"/>
+         <typeAlias type="com.kh.homeArt.goods.model.vo.Goods" alias="Goods"/>
+         <typeAlias type="com.kh.homeArt.goods.model.vo.GoodsAtt" alias="GoodsAtt"/>
+         <typeAlias type="com.kh.homeArt.cart.model.vo.Cart" alias="Cart"/>
+         <typeAlias type="com.kh.homeArt.order.model.vo.Order" alias="Order"/>
+         <typeAlias type="com.kh.homeArt.order.model.vo.OrderPageItem" alias="OrderPageItem"/>
+         <typeAlias type="com.kh.homeArt.common.Request" alias="Request"/>
+	
+		<typeAlias type="com.kh.homeArt.board.model.vo.Board" alias="Board"/>
+      <typeAlias type="com.kh.homeArt.board.model.vo.Att" alias="Att"/>
+      <typeAlias type="com.kh.homeArt.board.model.vo.Reply" alias="Reply"/>
+      <typeAlias type="com.kh.homeArt.board.model.vo.Likes" alias="Likes"/>
+		
+		
+		<typeAlias type="com.kh.homeArt.main.model.vo.PurchaseInfo" alias="PurchaseInfo"/>
+      <typeAlias type="com.kh.homeArt.main.model.vo.BoardInfo" alias="boardInfo"/>
+		
+		<typeAlias type="com.kh.homeArt.search.model.vo.ExpertBoardInfo" alias="ebi"/>
+		
+	</typeAliases>
+	<mappers>
+		<mapper resource = "mappers/member-mapper.xml"/>
+		<mapper resource = "mappers/notice-mapper.xml"/>
+		<mapper resource = "mappers/board-mapper.xml"/>
+		
+		<mapper resource="mappers/member-mapper.xml"/>
+         <mapper resource="mappers/goods-mapper.xml"/>
+         <mapper resource="mappers/cart-mapper.xml"/>
+         <mapper resource="mappers/order-mapper.xml"/>
+         <mapper resource="mappers/expert-mapper.xml"/>
+        
+        
+        <mapper resource="mappers/home-mapper.xml"/> 
+         <mapper resource="mappers/search-mapper.xml"/>
+		
+	
+	</mappers>
+</configuration>

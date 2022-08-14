@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="boardMapper">
+	
+	<select id="getCommunityList" resultMap="communityResultSet">
+		SELECT BOARD_NO, BOARD_TITLE, BOARD_CONTENT, BCREATE_DATE, MODIFY_DATE, WRITER,
+			NICKNAME, BOARD_TYPE, STATUS, VIEWS, 
+			(SELECT COUNT(*) FROM REPLY WHERE BOARD.BOARD_NO = REPLY.BOARD_NO) RCOUNT,
+			(SELECT COUNT(*) FROM LIKES WHERE BOARD.BOARD_NO = LIKES.BOARD_NO) LCOUNT
+		FROM BOARD
+			LEFT JOIN MEMBER ON(WRITER = ID)
+		WHERE BOARD_TYPE = 1 AND STATUS = 'Y'
+		ORDER BY BOARD_NO DESC
+	</select>
+	
+	<resultMap type="Board" id="communityResultSet">
+		<id column="BOARD_NO" property="boardNo"/>
+		<result column="BOARD_TITLE" property="boardTitle"/>
+		<result column="BOARD_CONTENT" property="boardContent"/>
+		<result column="BCREATE_DATE" property="bCreateDate"/>
+		<result column="MODIFY_DATE" property="modifyDate"/>
+		<result column="WRITER" property="writer"/>
+		<result column="NICKNAME" property="nickName"/>
+		<result column="BOARD_TYPE" property="boardType"/>
+		<result column="STATUS" property="status"/>
+		<result column="VIEWS" property="views"/>
+	
+		<result column="RCOUNT" property="rCount"/>
+		<result column="LCOUNT" property="lCount"/>
+	</resultMap>
+	
+	<select id="getImageList" resultMap="imageResultSet">
+		SELECT FILE_ID, ORIGIN_NAME, CHANGE_NAME, FILE_PATH, FILE_LEVEL,
+		BOARD_NO, MEMBER_ID
+		FROM ATT
+			JOIN BOARD USING(BOARD_NO)
+		WHERE BOARD_TYPE = 1 AND STATUS = 'Y' AND FILE_LEVEL = 0
+	</select>
+	
+	<resultMap type="Att" id="imageResultSet">
+		<id column="FILE_ID" property="fileId"/>
+		<result column="ORIGIN_NAME" property="originName"/>
+		<result column="CHANGE_NAME" property="changeName"/>
+		<result column="FILE_PATH" property="filePath"/>
+		<result column="FILE_LEVEL" property="fileLevel"/>
+		<result column="BOARD_NO" property="boardNo"/>
+		<result column="MEMBER_ID" property="memberId"/>
+	</resultMap>
+	
+	<select id="selectCommunity" resultMap="communityResultSet">
+		SELECT BOARD_NO, BOARD_TITLE, BOARD_CONTENT, BCREATE_DATE, MODIFY_DATE, WRITER,
+         NICKNAME, BOARD_TYPE, STATUS, VIEWS, 
+         (SELECT COUNT(*) FROM REPLY WHERE BOARD.BOARD_NO = REPLY.BOARD_NO) RCOUNT,
+         (SELECT COUNT(*) FROM LIKES WHERE BOARD.BOARD_NO = LIKES.BOARD_NO) LCOUNT
+      FROM BOARD
+         JOIN MEMBER ON(WRITER = ID)
+      WHERE BOARD_NO = #{bId} AND BOARD_TYPE = 1 AND STATUS = 'Y'
+	</select>
+	
+	<select id="selectImages" resultMap="imageDetailResultSet">
+		SELECT *
+		FROM ATT
+		WHERE BOARD_NO = #{bId}
+	</select>
+	
+	<resultMap type="Att" id="imageDetailResultSet">
+		<id column="FILE_ID" property="fileId"/>
+		<result column="ORIGIN_NAME" property="originName"/>
+		<result column="CHANGE_NAME" property="changeName"/>
+		<result column="FILE_PATH" property="filePath"/>
+		<result column="FILE_LEVEL" property="fileLevel"/>
+		<result column="BOARD_NO" property="boardNo"/>
+		<result column="MEMBER_ID" property="memberId"/>
+	</resultMap>
+	
+	<update id="addViewCount">
+		UPDATE BOARD
+		SET VIEWS = VIEWS+1
+		WHERE BOARD_NO = #{bId}
+	</update>
+	
+	
+	
+	
+	<insert id="insertCommunity">
+		INSERT INTO BOARD VALUES(SEQ_BID.NEXTVAL, #{boardTitle}, 
+		#{boardContent}, SYSDATE, SYSDATE, #{writer}, 1, 'Y', 0)
+	</insert>
+	
+	<insert id="insertImages" parameterType="HashMap">
+		INSERT INTO ATT VALUES(SEQ_AID.NEXTVAL, #{originName}, #{changeName}, null, #{fileLevel}, SEQ_BID.CURRVAL, #{memberId})
+	</insert>
+	
+	<update id="updateCommunity">
+		UPDATE BOARD
+		SET BOARD_TITLE = #{boardTitle}, BOARD_CONTENT = #{boardContent}, MODIFY_DATE = SYSDATE
+		WHERE BOARD_NO = #{boardNo} AND BOARD_TYPE = 1 AND STATUS = 'Y'
+	</update>
+	
+	<update id="updateImages">
+		UPDATE ATT
+		SET ORIGIN_NAME = #{originName}, CHANGE_NAME = #{changeName}, FILE_LEVEL = #{fileLevel}
+		WHERE FILE_ID = #{fileId}
+	</update>
+	
+	<delete id="deleteCommunity">
+		DELETE FROM BOARD
+		WHERE BOARD_NO = #{bId}
+	</delete>
+	
+	<insert id="insertReply">
+		INSERT INTO REPLY
+		VALUES(SEQ_RID.NEXTVAL, #{replyContent}, SYSDATE, DEFAULT, #{boardNo}, NULL, #{memberId})
+	</insert>
+	
+	<select id="selectReplyList" resultMap="replyResultSet">
+		SELECT *
+		FROM REPLY
+			JOIN MEMBER ON(MEMBER_ID = ID)
+		WHERE BOARD_NO=#{bId} AND STATUS='Y'
+		ORDER BY REPLY_NO
+	</select>
+	
+	<resultMap type="Reply" id="replyResultSet">
+		<id column="REPLY_NO" property="replyNo"/>
+		<result column="REPLY_CONTENT" property="replyContent"/>
+		<result column="CREATE_DATE" property="createDate"/>
+		<result column="STATUS" property="status"/>
+		<result column="BOARD_NO" property="boardNo"/>
+		<result column="SCOPE" property="scope"/>
+		<result column="NICKNAME" property="nickName"/>
+		<result column="MEMBER_ID" property="memberId"/>
+	</resultMap>
+	
+	<select id="replyCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM REPLY
+		WHERE BOARD_NO = #{bId} AND STATUS = 'Y'
+	</select>
+	
+	<update id="deleteReply">
+		UPDATE REPLY
+		SET STATUS = 'N'
+		WHERE REPLY_NO = #{rId}
+	</update>
+	
+	<select id="likesCount" resultType="_int">
+		SELECT COUNT(*) lCount
+		FROM LIKES
+		WHERE BOARD_NO = #{bId}
+	</select>
+	
+	<select id="likesCheck" resultType="_int">
+		SELECT COUNT(*) lCheck
+		FROM LIKES
+		WHERE LIKED_ID = #{likedId} AND BOARD_NO = #{boardNo}
+	</select>
+	
+	<select id="likesYN" resultType="_int">
+		SELECT COUNT(*) lCheck
+		FROM LIKES
+		WHERE LIKED_ID = #{likedId} AND BOARD_NO = #{boardNo}
+	</select>
+	
+	<insert id="addLikes">
+		INSERT INTO LIKES
+		VALUES(#{likedId}, #{boardNo})
+	</insert>
+	
+	<delete id="deleteLikes">
+		DELETE FROM LIKES
+		WHERE LIKED_ID = #{likedId} AND BOARD_NO = #{boardNo} 
+	</delete>
+</mapper>

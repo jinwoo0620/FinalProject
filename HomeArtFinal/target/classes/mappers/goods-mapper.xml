@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="goodsMapper">
+
+
+   <!-- 리절트 맵 -->
+   <resultMap type="Goods" id="goodsResultSet">
+      <id column="GOODS_ID" property="goodsId"/>
+      <result column="GOODS_TITLE" property="goodsTitle"/>
+      <result column="GOODS_PRICE" property="goodsPrice"/>   
+      <result column="GOODS_COMPANY" property="goodsCompany"/>
+      <result column="GOODS_INFO" property="goodsInfo"/>
+      <result column="GOODS_STOCK" property="goodsStock"/>
+      <result column="GOODS_SORT" property="goodsSort"/>
+      <result column="STATUS" property="status"/>
+      <result column="ADMIN_ID" property="adminId"/>
+   </resultMap>
+   
+   <resultMap type="GoodsAtt" id="goodsAttResultSet">
+      <id column="FILE_NO" property="fileNo"/>
+      <result column="ORIGIN_FILENAME" property="originFileName"/>
+      <result column="RENAME_FILENAME" property="renameFileName"/>
+      <result column="FILE_PATH" property="filePath"/>
+      <result column="THUMB_NAIL" property="thumbNail"/>
+      <result column="UPLOAD_DATE" property="uploadDate"/>
+      <result column="IMAGE_STATUS" property="imageStatus"/>
+      <result column="GOODS_ID" property="goodsId"/>
+   </resultMap>
+   
+   <!-- 구매게시판 텍스트부분 입력 -->
+   <insert id="insertGoodsText" >
+      insert into buy_goods
+      values(seq_bgid.nextval, #{goodsTitle}, #{goodsPrice}, #{goodsCompany}, null, #{goodsStock}, #{goodsSort}, 'Y', #{adminId})
+   </insert>
+
+   <!-- 구매게시판 썸네일 이미지 입력 --><!-- goodsId 어떻게 입력하는지 -->
+   <insert id="insertGoodsImage">
+      insert into goods_att
+      values(seq_gaid.nextval, #{originFileName}, #{renameFileName}, null, #{thumbNail}, sysdate, 'Y', seq_bgid.currval)
+   </insert>
+   
+   
+   <select id="getGoodsList" resultMap="goodsResultSet">
+      select *
+      from buy_goods
+          left join member on(admin_id = id)
+       where status = 'Y'
+   </select>
+   
+   <select id="getGoodsList1" resultMap="goodsAttResultSet">
+      select *
+      from goods_att
+          join buy_goods using (goods_id)
+      where image_status = 'Y'
+        and thumb_nail = 0
+   </select>
+   
+   <select id="selectGoodsText" resultMap="goodsResultSet">
+      select *
+      from buy_goods
+          left join member on(admin_id = id)
+       where status = 'Y'
+         and goods_id = #{gId}
+   </select>
+   
+   <select id="selectGoodsImage" resultMap="goodsAttResultSet">
+      select *
+      from goods_att
+           join buy_goods using (goods_id)
+      where image_status = 'Y'
+        and goods_id = #{gId}
+   </select>
+   
+   <update id="updateGoodsText">
+      update buy_goods
+      set goods_title=#{goodsTitle}, goods_price=#{goodsPrice}, goods_company=#{goodsCompany}, goods_info=#{goodsInfo}, goods_stock=#{goodsStock},
+         goods_sort=#{goodsSort}, admin_id=#{adminId}
+       where goods_id=#{goodsId}
+         and status = 'Y'
+   </update>
+   
+   <update id="updateGoodsImage">
+      update goods_att
+      set origin_filename = #{originFileName}, rename_filename = #{renameFileName}, thumb_nail = #{thumbNail},
+         upload_date = sysdate
+      where file_no = #{fileNo} and image_status = 'Y'
+   </update>
+   
+   <delete id="deleteGoodsText">
+      delete from buy_goods
+      where goods_id = #{gId}
+   </delete>
+   
+<!--    <delete id="deleteGoodsImage"> -->
+<!--       delete from goods_att -->
+<!--       where goods_id = #{gId} -->
+<!--    </delete> -->
+   
+</mapper>

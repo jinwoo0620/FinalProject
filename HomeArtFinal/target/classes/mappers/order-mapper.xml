@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="orderMapper">
+	
+	<resultMap type="Order" id="orderResultSet">
+		<id column="ORDER_ID" property="orderId"/>
+		<result column="ORDER_GOODS_QTY" property="orderGoodsQty"/>
+		<result column="MEMBER_ID" property="memberId"/>
+		<result column="ADDRESSEE" property="addressee"/>
+		<result column="ADDRESS" property="address"/>
+		<result column="ADDRESS2" property="address2"/>
+		<result column="ORDER_STATE" property="orderState"/>
+		
+		<result column="DELIVERYCOST" property="deliverCost"/>
+		<result column="ORDER_DATE" property="orderDate"/>
+	</resultMap>
+	
+	<resultMap type="OrderPageItem" id="OrderGoodsResultSet">
+	
+		<id column="CART_ID" property="cartId"/>
+		<result column="GOODS_ID" property="goodsId"/>
+		<result column="RENAME_FILENAME" property="renameFileName"/>
+		<result column="GOODS_COUNT" property="goodsCount"/>
+		<result column="GOODS_PRICE" property="goodsPrice"/>
+		<result column="GOODS_TITLE" property="goodsTitle"/>
+		
+	</resultMap>
+	
+	<select id="getListOrder" resultMap="OrderGoodsResultSet">
+		SELECT GOODS_ID, CART_ID, RENAME_FILENAME, GOODS_PRICE, GOODS_TITLE, GOODS_COUNT
+		FROM CART C
+		JOIN BUY_GOODS B USING (GOODS_ID)
+		JOIN GOODS_ATT G USING (GOODS_ID)
+		WHERE THUMB_NAIL = 0 AND CART_ID IN 
+			  <foreach collection="cId" item="arr" open="(" close=")" separator=",">
+			  	#{arr}
+			  </foreach> 
+	</select>
+	
+	
+</mapper>

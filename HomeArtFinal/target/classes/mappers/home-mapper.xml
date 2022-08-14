@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="HomeMapper">
+  <select id="getCurrentList" resultMap="purchaseInfo">
+	 SELECT * 
+	 FROM BUY_GOODS
+    	JOIN GOODS_ATT USING(GOODS_ID)
+     WHERE <![CDATA[ROWNUM <= 10 ]]>
+  </select>
+  
+  <select id="getRowCount" resultType="_int">
+  	SELECT COUNT(*) FROM BOARD WHERE BOARD_TYPE = 1 AND STATUS = 'Y'
+  </select>
+  
+  <select id="getBoardList" resultMap="boardInfo">
+  	SELECT * 
+	FROM(SELECT BOARD_NO, BOARD_TITLE, WRITER, VIEWS, ORIGIN_NAME, CHANGE_NAME, MEMBER.RENAME_FILENAME 
+  	FROM BOARD
+  		JOIN ATT USING(BOARD_NO)
+  		JOIN MEMBER ON(WRITER = ID)
+  	WHERE STATUS = 'Y' AND BOARD_TYPE = 1
+	AND FILE_LEVEL = 0
+	ORDER BY BOARD_NO DESC)
+	WHERE <![CDATA[ROWNUM <= 9 ]]>
+  </select>
+  
+  <resultMap type="boardInfo" id="boardInfo">
+  	<id column="BOARD_NO" property="BoardNo"></id>
+  	<result column="BOARD_TITLE" property="boardTitle"></result>
+  	<result column="WRITER" property="writer"></result>
+  	<result column="VIEWS" property="views"></result>
+  	<result column="ORIGIN_NAME" property="originName"></result>
+  	<result column="CHANGE_NAME" property="changeName"></result>
+  	<result column="RENAME_FILENAME" property="profilePath"></result>
+  </resultMap>
+  
+  <resultMap type="PurchaseInfo" id="purchaseInfo">
+  	<id column="GOODS_ID" property="goodsId"></id>
+  	<result column="GOODS_TITLE" property="goodsTitle"></result>
+  	<result column="GOODS_PRICE" property="goodsPrice"></result>
+  	<result column="GOODS_COMPANY" property="goodsCompay"></result>
+  	<result column="STATUS" property="status"></result>
+  	<result column="ORIGIN_FILENAME" property="originFileName"></result>
+  	<result column="RENAME_FILENAME" property="reNameFileName"></result>
+  	<result column="IMAGE_STATUS" property="imageStatus"></result>
+  </resultMap>
+</mapper>
